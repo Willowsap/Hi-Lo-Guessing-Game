@@ -74,15 +74,17 @@ public class HiLoGame {
 
   public void printResults() {
     double average = 0.0;
-    String topLine = "    Correct Guesses          Percent Chance";
+    String topLine = "    Correct Guesses          Percent Chance       Dropoff Ratio";
     double lineAverage = 0.0;
 
+    double prevAverage = -1;
     System.out.println(topLine);
 		for(int i = 0; i < this.results.size(); i++) {
 			int result = this.results.get(i);
 			if(result != 0) {
         lineAverage = (((double)result/(double)this.numGames)*100.0);
-				System.out.println(calcLine(i,result, lineAverage));
+				System.out.println(calcLine(i,result, lineAverage, prevAverage));
+        prevAverage = lineAverage;
 			}
 			average += (result * i);
 		}
@@ -91,14 +93,16 @@ public class HiLoGame {
 		System.out.println("Average: " + average);
   }
 
-  private String calcLine(int length, int numTimes, double average) {
+  private String calcLine(int length, int numTimes, double average, double prevAverage) {
 
     int lineSegmentOneLength = 4;
     int lineSegmentTwoLength = 25;
-    int lineSegmentThreeLength = 14;
+    int lineSegmentThreeLength = 21;
+    int lineSegmentFourLength = 0;
     String lineSegmentOne = "";
     String lineSegmentTwo = "";
     String lineSegmentThree = "";
+    String lineSegmentFour = "";
     int digitCalcStorage = 0;
     int numDigits = 0;
 
@@ -131,16 +135,26 @@ public class HiLoGame {
     }
 
     // lineSegmentThree
-    lineSegmentThree += average;
-    return lineSegmentOne + lineSegmentTwo + lineSegmentThree;
-    //System.out.println(i + " correct guesses: " + result + "             " +  + "%");
+    lineSegmentThree += String.format("%8.5f", average);
+    for(int i = lineSegmentThree.length(); i < lineSegmentThreeLength; i++) {
+      lineSegmentThree += " ";
+    }
+
+    // lingSegmentFour
+    if (prevAverage != -1) {
+      lineSegmentFour+= String.format("%8.5f", average/prevAverage);
+
+    }
+
+    return lineSegmentOne + lineSegmentTwo + lineSegmentThree + lineSegmentFour;
+
   }
 
 	public static void main(String[] args) {
     //setup
-    int numInts = 9;
+    int numInts = 10;
     int startInt = 1;
-    int numGames = 1000000;
+    int numGames = 10000000;
     HiLoGame game = new HiLoGame(numInts, startInt);
     game.playGames(numGames);
     game.printResults();
