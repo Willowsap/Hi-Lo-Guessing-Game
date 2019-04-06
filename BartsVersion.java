@@ -3,8 +3,10 @@ import java.util.Random;
 
 public class BartsVersion {
 	public static void main(String[] args) {
-
-    int depth = Integer.parseInt(args[0]);
+    int depth = 10;
+    if (args.length > 0) {
+      int depth = Integer.parseInt(args[0]);
+    }
     ArrayList<Long[]> digitCount = new ArrayList<Long[]>();
     ArrayList<Double[]> digitCountTimesOdd = new ArrayList<Double[]>();
     double[] guessOdds = new double[10];
