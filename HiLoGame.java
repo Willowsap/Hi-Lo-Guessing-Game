@@ -56,7 +56,11 @@ public class HiLoGame {
       this.totalPerNumber.add(0);
     }
 		do {
-			guess = (currNumber > topMid) ? "smaller" : "bigger";
+      /*if (currNumber == topMid) {
+        guess = (this.rand.nextInt(10) >= 5) ? "smaller" : "bigger";
+      } else {*/
+        guess = (currNumber > topMid) ? "smaller" : "bigger";
+      //}
 			do {
 				nextNumber = this.rand.nextInt(numInts)+startInt;
 			} while(nextNumber == currNumber);
@@ -102,17 +106,20 @@ public class HiLoGame {
     String topLine = "    " +
       "Correct Guesses          " +
       "Percent Chance           " +
-      "Dropoff Ratio            ";
+      "Dropoff Ratio            " +
+      "Dropoff Percent          ";
     double lineAverage = 0.0;
-
     double prevAverage = -1;
+    int prevResult = -1;
+
     System.out.println(topLine);
 		for(int i = 0; i < this.results.size(); i++) {
 			int result = this.results.get(i);
 			if(result != 0) {
         lineAverage = (((double)result/(double)this.numGames)*100.0);
-				System.out.println(calcLine(i,result, lineAverage, prevAverage));
+				System.out.println(calcLine(i,result, prevResult, lineAverage, prevAverage));
         prevAverage = lineAverage;
+        prevResult = result;
 			}
 			average += (result * i);
       totalCheck += result;
@@ -174,16 +181,18 @@ public class HiLoGame {
     System.out.println();
   }
 
-  private String calcLine(int length, int numTimes, double average, double prevAverage) {
+  private String calcLine(int length, int numTimes, int prevNumTimes, double average, double prevAverage) {
 
     int lineSegmentOneLength = 4;
     int lineSegmentTwoLength = 25;
     int lineSegmentThreeLength = 25;
     int lineSegmentFourLength = 25;
+    int lineSegmentFiveLength = 25;
     String lineSegmentOne = "";
     String lineSegmentTwo = "";
     String lineSegmentThree = "";
     String lineSegmentFour = "";
+    String lineSegmentFive = "";
     int digitCalcStorage = 0;
     int numDigits = 0;
 
@@ -217,6 +226,7 @@ public class HiLoGame {
 
     // lineSegmentThree
     lineSegmentThree += String.format("%8.5f", average);
+    lineSegmentThree += "%";
     for(int i = lineSegmentThree.length(); i < lineSegmentThreeLength; i++) {
       lineSegmentThree += " ";
     }
@@ -228,8 +238,16 @@ public class HiLoGame {
         lineSegmentFour += " ";
       }
     }
-    return lineSegmentOne + lineSegmentTwo + lineSegmentThree + lineSegmentFour;
 
+    // lingSegmentFive
+    if (prevAverage != -1) {
+      lineSegmentFive+= String.format("%8.5f", (-1*(100-(average/prevAverage)*100)));
+      lineSegmentFour += "%";
+      for(int i = lineSegmentFive.length(); i < lineSegmentFiveLength; i++) {
+        lineSegmentFive += " ";
+      }
+    }
+    return lineSegmentOne + lineSegmentTwo + lineSegmentThree + lineSegmentFour + lineSegmentFive;
   }
 
 	public static void main(String[] args) {
